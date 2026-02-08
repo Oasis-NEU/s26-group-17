@@ -76,39 +76,4 @@ export default defineConfig([
 
 
 
-## System Architecture
 
-┌─────────────────────────────────────────────────────────┐
-│  USER'S BROWSER                                         │
-│  ┌────────────────────────────────────────────────┐   │
-│  │  NEXT.JS (React + TypeScript + Tailwind)       │   │
-│  │  - Pages (routing)                              │   │
-│  │  - Components (UI)                              │   │
-│  │  - TanStack Query (API calls)                   │   │
-│  │  - Zustand (global state)                       │   │
-│  │  - Framer Motion (animations)                   │   │
-│  │  - Recharts (dashboard graphs)                  │   │
-│  └───────────────┬────────────────────────────────┘   │
-│                  │ HTTPS requests                      │
-└──────────────────┼─────────────────────────────────────┘
-                   │
-                   ▼
-┌──────────────────────────────────────────────────────────┐
-│  BACKEND SERVER (Railway)                                │
-│  ┌─────────────────────────────────────────────────┐   │
-│  │  FASTAPI (Python)                               │   │
-│  │  - REST API endpoints                           │   │
-│  │  - JWT authentication                           │   │
-│  │  - WebSocket server (Socket.io)                 │   │
-│  └──────────┬──────────────────┬───────────────────┘   │
-│             │                  │                         │
-│             ▼                  ▼                         │
-│  ┌──────────────────┐  ┌──────────────────┐           │
-│  │  POSTGRESQL      │  │  REDIS           │           │
-│  │  (Main database) │  │  (Cache/Sessions)│           │
-│  │  - Users         │  │  - Active users  │           │
-│  │  - Boards        │  │  - Board cache   │           │
-│  │  - Cards         │  │  - WebSocket pub │           │
-│  │  - Analytics     │  └──────────────────┘           │
-│  └──────────────────┘                                   │
-└──────────────────────────────────────────────────────────┘
