@@ -26,3 +26,14 @@ backend/venv/
 backend/*.db
 backend/__pycache__/
 backend/app/__pycache__/
+
+# Backend Python
+backend/venv/
+backend/**/__pycache__/
+backend/*.db
+backend/*.pyc
+backend/.env
+
+# Frontend
+node_modules/
+.DS_Store
