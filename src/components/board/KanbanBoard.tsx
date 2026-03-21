@@ -1,13 +1,5 @@
 import { useState } from 'react';
-import { 
-  DndContext, 
-  DragOverlay,
-  closestCenter,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core';
-import type { DragStartEvent, DragEndEvent } from '@dnd-kit/core';
+import { DndContext, DragEndEvent, DragOverlay, DragStartEvent } from '@dnd-kit/core';
 import KanbanColumn from './KanbanColumn';
 import TaskCard from './TaskCard';
 import Button from '../ui/Button';
@@ -54,14 +46,6 @@ export default function KanbanBoard() {
     },
   ]);
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 8,
-      },
-    })
-  );
-
   const handleDragStart = (event: DragStartEvent) => {
     const { active } = event;
     const task = columns
@@ -79,6 +63,7 @@ export default function KanbanBoard() {
     const activeTaskId = active.id as string;
     const overColumnId = over.id as string;
 
+    // Find source column and task
     let sourceColumn: Column | undefined;
     let task: Task | undefined;
 
@@ -93,11 +78,14 @@ export default function KanbanBoard() {
 
     if (!sourceColumn || !task) return;
 
+    // Find destination column
     const destColumn = columns.find(col => col.id === overColumnId);
     if (!destColumn) return;
 
+    // Don't do anything if dropping in same column
     if (sourceColumn.id === destColumn.id) return;
 
+    // Update columns
     setColumns(prev => prev.map(col => {
       if (col.id === sourceColumn!.id) {
         return {
@@ -129,12 +117,7 @@ export default function KanbanBoard() {
         </Button>
       </div>
 
-      <DndContext 
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragStart={handleDragStart} 
-        onDragEnd={handleDragEnd}
-      >
+      <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {columns.map(column => (
             <KanbanColumn
