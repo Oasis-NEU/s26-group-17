@@ -7,8 +7,9 @@ import AddTaskModal, { type NewTaskInput } from './AddTaskModal';
 import KanbanColumn from './KanbanColumn';
 import TaskCard from './TaskCard';
 import Button from '../ui/Button';
-import { Plus, BookOpen, ChevronDown, Trash2 } from 'lucide-react';
+import { Plus, BookOpen, ChevronDown, Trash2, Search } from 'lucide-react';
 import { api } from '../../lib/api';
+import CourseSearch from './CourseSearch';
 import confetti from 'canvas-confetti';
 
 interface Task {
@@ -33,6 +34,7 @@ export default function KanbanBoard({ onXpChange }: KanbanBoardProps) {
   const [showBoardMenu, setShowBoardMenu] = useState(false);
   const [newBoardName, setNewBoardName] = useState('');
   const [showNewBoardInput, setShowNewBoardInput] = useState(false);
+  const [showCourseSearch, setShowCourseSearch] = useState(false);
   const [columns, setColumns] = useState<Column[]>([
     { id: 'todo', title: 'To Do', tasks: [] },
     { id: 'in_progress', title: 'In Progress', tasks: [] },
@@ -110,7 +112,13 @@ export default function KanbanBoard({ onXpChange }: KanbanBoardProps) {
         const data = JSON.parse(event.data);
         if (data.board_id === activeBoardId) loadCards(activeBoardId);
       };
-      ws.onclose = () => { reconnectTimer = setTimeout(connect, 3000); };
+      let retries = 0;
+      ws.onclose = () => {
+        if (retries < 5) {
+          retries++;
+          reconnectTimer = setTimeout(connect, 5000 * retries);
+        }
+      };
     };
     connect();
     return () => { ws?.close(); clearTimeout(reconnectTimer); };
@@ -273,11 +281,11 @@ export default function KanbanBoard({ onXpChange }: KanbanBoardProps) {
                       </div>
                     ) : (
                       <button
-                        onClick={() => setShowNewBoardInput(true)}
+                        onClick={() => { setShowCourseSearch(true); setShowBoardMenu(false); }}
                         className="flex items-center gap-1.5 text-sm text-sky-600 hover:text-sky-800"
                       >
-                        <Plus className="h-4 w-4" />
-                        New Course Board
+                        <Search className="h-4 w-4" />
+                        Search NEU Courses
                       </button>
                     )}
                   </div>
@@ -312,6 +320,17 @@ export default function KanbanBoard({ onXpChange }: KanbanBoardProps) {
         </DndContext>
       </div>
 
+      {showCourseSearch && (
+        <CourseSearch
+          onSelectCourse={async (name) => {
+            const board = await api.createBoard({ name, course_name: name });
+            setBoards(prev => [...prev, board]);
+            setActiveBoardId(board.id);
+            setShowCourseSearch(false);
+          }}
+          onClose={() => setShowCourseSearch(false)}
+        />
+      )}
       <AddTaskModal isOpen={isCreateTaskOpen} onClose={() => setIsCreateTaskOpen(false)} onSave={handleCreateTask} />
     </>
   );
