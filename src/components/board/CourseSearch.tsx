@@ -71,14 +71,17 @@ export default function CourseSearch({ onSelectCourse, onClose }: CourseSearchPr
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-      <div className="w-full max-w-2xl rounded-2xl border border-sky-200 bg-white shadow-2xl mx-4">
-        <div className="flex items-center justify-between border-b border-sky-100 px-6 py-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={onClose}>
+      <div
+        className="mx-4 w-full max-w-2xl rounded-xl border border-gray-200 bg-white shadow-xl"
+        onClick={event => event.stopPropagation()}
+      >
+        <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
           <div className="flex items-center gap-2">
-            <BookOpen className="h-5 w-5 text-sky-500" />
-            <h2 className="text-lg font-semibold text-slate-900">Search NEU Courses</h2>
+            <BookOpen className="h-5 w-5 text-gray-700" />
+            <h2 className="text-lg font-semibold text-gray-900">Search NEU Courses</h2>
           </div>
-          <button onClick={onClose} className="rounded-md p-1 text-slate-400 hover:bg-slate-100">
+          <button onClick={onClose} className="rounded-md p-1 text-gray-500 hover:bg-gray-100">
             <X className="h-5 w-5" />
           </button>
         </div>
@@ -86,30 +89,30 @@ export default function CourseSearch({ onSelectCourse, onClose }: CourseSearchPr
         <div className="p-6">
           <div className="flex gap-3 mb-4">
             <div className="flex-1">
-              <label className="text-xs font-medium text-slate-500 mb-1 block">Subject</label>
+              <label className="mb-1 block text-xs font-medium text-gray-600">Subject</label>
               <input
                 value={subject}
                 onChange={e => setSubject(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && search()}
                 placeholder="e.g. CS, MATH, PHYS"
-                className="w-full rounded-lg border border-sky-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-300"
+                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-300"
               />
             </div>
             <div className="w-32">
-              <label className="text-xs font-medium text-slate-500 mb-1 block">Course #</label>
+              <label className="mb-1 block text-xs font-medium text-gray-600">Course #</label>
               <input
                 value={courseNumber}
                 onChange={e => setCourseNumber(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && search()}
                 placeholder="e.g. 2500"
-                className="w-full rounded-lg border border-sky-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-300"
+                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-300"
               />
             </div>
             <div className="flex items-end">
               <button
                 onClick={search}
                 disabled={loading || !subject.trim()}
-                className="flex items-center gap-2 rounded-lg bg-sky-500 px-4 py-2 text-sm font-medium text-white hover:bg-sky-600 disabled:opacity-50"
+                className="flex items-center gap-2 rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50"
               >
                 <Search className="h-4 w-4" />
                 {loading ? 'Searching...' : 'Search'}
@@ -117,21 +120,21 @@ export default function CourseSearch({ onSelectCourse, onClose }: CourseSearchPr
             </div>
           </div>
 
-          {error && <p className="text-sm text-rose-500 mb-3">{error}</p>}
+          {error && <p className="mb-3 text-sm text-red-600">{error}</p>}
 
           <div className="max-h-80 overflow-y-auto space-y-2">
             {courses.map(course => (
               <div key={course.courseReferenceNumber}
-                className="flex items-center justify-between rounded-xl border border-sky-100 bg-sky-50/50 px-4 py-3 hover:border-sky-300 hover:bg-sky-50">
+                className="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 hover:border-gray-300 hover:bg-gray-100">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold text-slate-900 text-sm">
+                    <span className="text-sm font-semibold text-gray-900">
                       {course.subject} {course.courseNumber}
                     </span>
-                    <span className="text-xs text-slate-400">CRN: {course.courseReferenceNumber}</span>
+                    <span className="text-xs text-gray-500">CRN: {course.courseReferenceNumber}</span>
                   </div>
-                  <p className="text-sm text-slate-600 truncate">{course.courseTitle}</p>
-                  <div className="flex items-center gap-3 mt-1 text-xs text-slate-400">
+                  <p className="truncate text-sm text-gray-700">{course.courseTitle}</p>
+                  <div className="mt-1 flex items-center gap-3 text-xs text-gray-500">
                     {course.faculty[0] && <span>👤 {course.faculty[0].displayName}</span>}
                     {course.meetingsFaculty[0] && (
                       <span>🕐 {days(course.meetingsFaculty[0])} {formatTime(course.meetingsFaculty[0].meetingTime?.beginTime)}</span>
@@ -141,7 +144,7 @@ export default function CourseSearch({ onSelectCourse, onClose }: CourseSearchPr
                 </div>
                 <button
                   onClick={() => onSelectCourse(`${course.subject} ${course.courseNumber} - ${course.courseTitle}`)}
-                  className="ml-3 flex items-center gap-1.5 rounded-lg bg-sky-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-sky-600"
+                  className="ml-3 flex items-center gap-1.5 rounded-md bg-gray-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-gray-800"
                 >
                   <Plus className="h-3.5 w-3.5" />
                   Add Board
@@ -151,7 +154,7 @@ export default function CourseSearch({ onSelectCourse, onClose }: CourseSearchPr
           </div>
 
           {courses.length === 0 && !loading && !error && (
-            <p className="text-center text-sm text-slate-400 py-6">
+            <p className="py-6 text-center text-sm text-gray-500">
               Search for a NEU course to create a board (e.g. CS 3500)
             </p>
           )}
